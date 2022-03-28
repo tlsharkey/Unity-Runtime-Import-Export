@@ -15,7 +15,7 @@ namespace RuntimeExport
             this.filter = filter;
         }
 
-        public string As(Type t)
+        public Dictionary<string, string> As(Type t)
         {
             if (!t.BaseType.Equals(typeof(Exporter))) throw new System.Exception($"Cannot export as type {t.ToString()}. Must be a child of RuntimeExport.Exporter type.");
             

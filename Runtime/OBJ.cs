@@ -8,29 +8,35 @@ namespace RuntimeExport
     {
         public OBJ(MeshFilter filter): base(filter) {}
 
-        override public string Export()
+        override public Dictionary<string, string> Export()
         {
             MeshFilter[] meshFilters = filter.GetComponentsInChildren<MeshFilter>();
+            var ret = new Dictionary<string, string>(); // filename: data
             string data = "";
 
             // Name the exported file
             data += $"# ==========\n";
             data += $"# {this.filter.gameObject.name}\n";
             data += $"# ==========\n\n\n";
+            data += $"mtlib {this.filter.gameObject.name + ".mtl"}\n\n";
 
             // Keep track of offsets
             int vertexIndexOffset = 0;
             int normalIndexOffset = 0;
             int uvIndexOffset = 0;
+            string materialData = "";
 
             // Create OBJ data for each mesh that's a child of this mesh
             foreach (var filter in meshFilters)
             {
                 Mesh mesh = filter.mesh;
-                Material[] materials = filter.GetComponent<Renderer>().sharedMaterials;
 
                 // Create Object header
                 data += $"g {filter.name}\n";
+
+                // Add Materials
+                Material[] materials = filter.GetComponent<Renderer>().sharedMaterials;
+                materialData += this.GenerateMaterialData(materials);
 
                 // Add Verticies
                 foreach (var vert in mesh.vertices)
@@ -55,13 +61,11 @@ namespace RuntimeExport
                 }
                 data += "\n";
 
-                // Add Material / Triangles
+                // Add Triangles
                 for (int i = 0; i < mesh.subMeshCount; i++)
                 {
-                    // Material
                     data += $"usemtl {materials[i].name}\n";
                     data += $"usemap {materials[i].name}\n";
-                    // Triangles
                     int[] triangles = mesh.GetTriangles(i);
                     for (int t = 0; t < triangles.Length; t += 3)
                         data += string.Format("f {0}/{0}/{0} {1}/{1}/{1} {2}/{2}/{2}\n",
@@ -77,6 +81,28 @@ namespace RuntimeExport
                 uvIndexOffset += mesh.uv.Length;
             }
 
+            // Add Materials
+            data += materialData;
+
+            ret.Add(this.filter.gameObject.name + ".obj", data);
+            ret.Add(this.filter.gameObject.name + ".mtl", materialData);
+            return ret;
+        }
+
+        private string GenerateMaterialData(Material[] mats)
+        {
+            string data = "";
+
+            foreach (Material mat in mats)
+            {
+                data += $"newmtl {mat.name}\n";
+
+                //data += $"Ka {mat.color.r} {mat.color.g} {mat.color.b}\n"; // ambient
+                data += $"Kd {mat.color.r} {mat.color.g} {mat.color.b}\n"; // diffuse
+                //data += $"Ks {mat.color.r} {mat.color.g} {mat.color.b}\n"; // specular
+                data += $"Tr {mat.color.a}\n"; // transparency
+                data += "\n\n";
+            }
             return data;
         }
     }

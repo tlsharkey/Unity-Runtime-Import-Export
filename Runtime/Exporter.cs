@@ -13,6 +13,6 @@ namespace RuntimeExport
             this.filter = filter;
         }
 
-        public abstract string Export();
+        public abstract Dictionary<string, string> Export();
     }
 }
