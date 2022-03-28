@@ -1,8 +1,6 @@
 {
-    "name": "com.tlsharkey.unityimportexport",
-    "version": "0.0.1",
-    "displayName": "Runtime Import/Export",
-    "description": "Runtime import and export of 3D models in Unity",
-    "unity": "2017.1",
-    "dependencies": {}
+  "name": "com.tlsharkey.runtimeexport",
+  "version": "0.0.1",
+  "displayName": "Runtime Import/Export",
+  "description": "Runtime import and export of 3D models in Unity"
 }
