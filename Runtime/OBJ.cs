@@ -41,7 +41,7 @@ namespace RuntimeExport
                 // Add Verticies
                 foreach (var vert in mesh.vertices)
                 {
-                    Vector3 globalVert = filter.transform.TransformPoint(vert);
+                    Vector3 globalVert = this.target.transform.InverseTransformPoint(filter.transform.TransformPoint(vert));
                     data += $"v {-globalVert.x} {globalVert.y} {globalVert.z}\n";
                 }
                 data += "\n";
@@ -49,7 +49,7 @@ namespace RuntimeExport
                 // Add Normals
                 foreach (var norm in mesh.normals)
                 {
-                    Vector3 globalNorm = filter.transform.TransformDirection(norm);
+                    Vector3 globalNorm = this.target.transform.InverseTransformDirection(filter.transform.TransformDirection(norm));
                     data += $"vn {-globalNorm.x} {globalNorm.y} {globalNorm.z}\n";
                 }
                 data += "\n";
