@@ -6,11 +6,11 @@ namespace RuntimeExport
 {
     public abstract class Exporter
     {
-        public MeshFilter filter;
+        public GameObject target;
 
-        public Exporter(MeshFilter filter)
+        public Exporter(GameObject target)
         {
-            this.filter = filter;
+            this.target = target;
         }
 
         public abstract Dictionary<string, string> Export();

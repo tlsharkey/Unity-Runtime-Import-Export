@@ -6,19 +6,19 @@ namespace RuntimeExport
 {
     public class OBJ : Exporter
     {
-        public OBJ(MeshFilter filter): base(filter) {}
+        public OBJ(GameObject target): base(target) {}
 
         override public Dictionary<string, string> Export()
         {
-            MeshFilter[] meshFilters = filter.GetComponentsInChildren<MeshFilter>();
+            MeshFilter[] meshFilters = target.GetComponentsInChildren<MeshFilter>();
             var ret = new Dictionary<string, string>(); // filename: data
             string data = "";
 
             // Name the exported file
             data += $"# ==========\n";
-            data += $"# {this.filter.gameObject.name}\n";
+            data += $"# {this.target.name}\n";
             data += $"# ==========\n\n\n";
-            data += $"mtlib {this.filter.gameObject.name + ".mtl"}\n\n";
+            data += $"mtlib {this.target.name + ".mtl"}\n\n";
 
             // Keep track of offsets
             int vertexIndexOffset = 0;
@@ -85,8 +85,8 @@ namespace RuntimeExport
             // Add Materials
             data += materialData;
 
-            ret.Add(this.filter.gameObject.name + ".obj", data);
-            ret.Add(this.filter.gameObject.name + ".mtl", materialData);
+            ret.Add(this.target.name + ".obj", data);
+            ret.Add(this.target.name + ".mtl", materialData);
             return ret;
         }
 

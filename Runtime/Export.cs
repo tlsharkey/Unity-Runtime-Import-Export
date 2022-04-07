@@ -8,20 +8,20 @@ namespace RuntimeExport
 {
     public class Export
     {
-        private MeshFilter filter;
+        private GameObject target;
 
-        public Export(MeshFilter filter)
+        public Export(GameObject target)
         {
-            this.filter = filter;
+            this.target = target;
         }
 
         public Dictionary<string, string> As(Type t)
         {
             if (!t.BaseType.Equals(typeof(Exporter))) throw new System.Exception($"Cannot export as type {t.ToString()}. Must be a child of RuntimeExport.Exporter type.");
             
-            ConstructorInfo c = t.GetConstructor(new[] { typeof(MeshFilter) });
+            ConstructorInfo c = t.GetConstructor(new[] { typeof(GameObject) });
             Debug.Log(c);
-            Exporter exporter = c.Invoke(new object[] { this.filter }) as Exporter;
+            Exporter exporter = c.Invoke(new object[] { this.target }) as Exporter;
             return exporter.Export();
         }
     }
