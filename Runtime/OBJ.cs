@@ -41,16 +41,16 @@ namespace RuntimeExport
                 // Add Verticies
                 foreach (var vert in mesh.vertices)
                 {
-                    Vector3 tvert = filter.transform.TransformPoint(vert);
-                    data += $"v {-tvert.x} {tvert.y} {tvert.z}\n";
+                    Vector3 globalVert = filter.transform.TransformPoint(vert);
+                    data += $"v {-globalVert.x} {globalVert.y} {globalVert.z}\n";
                 }
                 data += "\n";
 
                 // Add Normals
                 foreach (var norm in mesh.normals)
                 {
-                    Vector3 tnorm = filter.transform.TransformPoint(norm);
-                    data += $"vn {-tnorm.x} {tnorm.y} {tnorm.z}\n";
+                    Vector3 globalNorm = filter.transform.TransformDirection(norm);
+                    data += $"vn {-globalNorm.x} {globalNorm.y} {globalNorm.z}\n";
                 }
                 data += "\n";
 
@@ -65,11 +65,12 @@ namespace RuntimeExport
                 for (int i = 0; i < mesh.subMeshCount; i++)
                 {
                     data += $"usemtl {materials[i].name}\n";
-                    data += $"usemap {materials[i].name}\n";
+                    data += $"usemap {materials[i].name}\n\n";
+
                     int[] triangles = mesh.GetTriangles(i);
                     for (int t = 0; t < triangles.Length; t += 3)
-                        data += string.Format("f {0}/{0}/{0} {1}/{1}/{1} {2}/{2}/{2}\n",
-                            triangles[t] + 1 + vertexIndexOffset,
+                        data += string.Format("f {1}/{1}/{1} {0}/{0}/{0} {2}/{2}/{2}\n",
+                            triangles[t + 0] + 1 + vertexIndexOffset,
                             triangles[t + 1] + 1 + normalIndexOffset,
                             triangles[t + 2] + 1 + uvIndexOffset);
                 }
